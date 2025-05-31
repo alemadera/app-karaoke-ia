@@ -3,6 +3,5 @@ numpy
 soundfile
 whisper
 torch
-torchaudio
 imageio-ffmpeg
 git+https://github.com/facebookresearch/demucs
