@@ -52,7 +52,7 @@ uploaded_file = st.file_uploader("📁 Sube tu video (MP4, MKV, MOV, AVI, WEBM)"
 
 # Opciones
 generate_lyrics = st.checkbox("🧠 Generar letras con IA (Whisper)", value=True)
-selected_whisper_model = "medium" if generate_lyrics else None
+selected_whisper_model = "small" if generate_lyrics else None
 
 # Procesamiento
 if uploaded_file is not None:
