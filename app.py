@@ -52,7 +52,7 @@ uploaded_file = st.file_uploader("📁 Sube tu video (MP4, MKV, MOV, AVI, WEBM)"
 
 # Opciones
 generate_lyrics = st.checkbox("🧠 Generar letras con IA (Whisper)", value=True)
-selected_whisper_model = "base" if generate_lyrics else None
+selected_whisper_model = "large" if generate_lyrics else None
 
 # Procesamiento
 if uploaded_file is not None:
@@ -143,7 +143,9 @@ if uploaded_file is not None:
                     st.error("❌ No se pudo crear el video final.")
 
                 total_time = time.time() - start_total
-                st.info(f"⏱️ Tiempo total: {total_time:.2f} segundos")
+                minutes = int(total_time // 60)
+                seconds = int(total_time % 60)
+                st.info(f"⏱️ Tiempo total: {minutes} min {seconds} seg")
 
             except Exception as e:
                 st.error(f"❌ Error durante el procesamiento: {e}")
