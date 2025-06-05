@@ -10,6 +10,12 @@ import whisper
 import imageio_ffmpeg as ffmpeg
 import base64
 
+# función de reseteo 
+def reset_app():
+    """Borra todo el session_state y recarga la app."""
+    st.session_state.clear()
+    st.experimental_rerun()
+
 # Función para ejecutar comandos de sistema
 def run_command(cmd_list, show_output=True):
     process = subprocess.Popen(cmd_list, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
@@ -47,12 +53,22 @@ Sube un video musical, y esta app usará IA para:
 
 st.warning("⚠️ El proceso puede tardar varios minutos. Sé paciente mientras se procesa el video.")
 
-# Subida del archivo
-uploaded_file = st.file_uploader("📁 Sube tu video (MP4, MKV, MOV, AVI, WEBM)", type=["mp4", "mkv", "mov", "avi", "webm"])
+# inicializa flags de estado
+if "video_generado" not in st.session_state:
+    st.session_state["video_generado"] = False
 
+# Subida del archivo
+if not st.session_state["video_generado"]:
+    uploaded_file = st.file_uploader(
+        "📁 Sube tu video (MP4, MKV, MOV, AVI, WEBM)",
+        type=["mp4", "mkv", "mov", "avi", "webm"]
+    )
+else:
+    uploaded_file = None
+    
 # Opciones
 generate_lyrics = st.checkbox("🧠 Generar letras con IA (Whisper)", value=True)
-selected_whisper_model = "small" if generate_lyrics else None
+selected_whisper_model = "medium" if generate_lyrics else None
 
 # Procesamiento
 if uploaded_file is not None:
@@ -139,6 +155,8 @@ if uploaded_file is not None:
                     st.success("🎉 Video karaoke creado exitosamente.")
                     st.video(str(output_path))
                     download_button(output_path)
+                    
+                    st.session_state["video_generado"] = True
                 else:
                     st.error("❌ No se pudo crear el video final.")
 
@@ -149,5 +167,10 @@ if uploaded_file is not None:
 
             except Exception as e:
                 st.error(f"❌ Error durante el procesamiento: {e}")
+            #mostrar resultado + botón reinicio --------------
+if st.session_state.get("video_generado", False):
+    st.markdown("---")
+    if st.button("🎬 Crear otro video"):
+        reset_app()
 else:
     st.info("👈 Sube un video para comenzar.")
